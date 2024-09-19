@@ -89,33 +89,33 @@ void setup()
 
   // bme280.begin(21); // join i2c bus (address optional for master)
 
-  auto salon_temperature_metadata =
-      new SKMetadata("K",                                             // units
-                     "Salon Temperature",                             // display name
-                     "Salon Temperature gathered from BME280 sensor", // description
-                     "Salon Temp",                                    // short name
-                     10.                                              // timeout, in seconds
+  auto outside_temperature_metadata =
+      new SKMetadata("K",                                               // units
+                     "Outside Temperature",                             // display name
+                     "Outside Temperature gathered from BME280 sensor", // description
+                     "Outside Temp",                                    // short name
+                     10.                                                // timeout, in seconds
       );
-  auto salon_barometric_pressure_metadata =
-      new SKMetadata("Pa",                                                    // units
-                     "Salon Barometric Pressure",                             // display name
-                     "Salon Barometric Pressure gathered from BME280 sensor", // description
-                     "Salon Pressure",                                        // short name
+  auto outside_barometric_pressure_metadata =
+      new SKMetadata("Pa",                                                      // units
+                     "Outside Pressure",                                        // display name
+                     "Outside Barometric Pressure gathered from BME280 sensor", // description
+                     "Outside Pressure",                                        // short name
+                     10.                                                        // timeout, in seconds
+      );
+  auto outside_humidity_metadata =
+      new SKMetadata("",                                                      // units
+                     "Outside Humidity",                                      // display name
+                     "Outside Relative Humidity gathered from BME280 sensor", // description
+                     "Outside Humidity",                                      // short name
                      10.                                                      // timeout, in seconds
-      );
-  auto salon_relativeHumidity_metadata =
-      new SKMetadata("",                                                    // units
-                     "Salon Relative Humidity",                             // display name
-                     "Salon Relative Humidity gathered from BME280 sensor", // description
-                     "Salon Humidity",                                      // short name
-                     10.                                                    // timeout, in seconds
       );
 
   // Construct the global SensESPApp() object
   SensESPAppBuilder builder;
   sensesp_app = (&builder)
                     // Set a custom hostname for the app.
-                    ->set_hostname("drama-sensesp_salon")
+                    ->set_hostname("drama-sensesp_outside")
                     // Optionally, hard-code the WiFi and Signal K server
                     // settings. This is normally not needed.
                     ->set_wifi("drama_network", "sv_drama")
@@ -149,11 +149,11 @@ void setup()
       new RepeatSensor<float>(60000, read_humidity_callback);
 
   // Send the temperature to the Signal K server as a Float
-  bme280_temp->connect_to(new SKOutputFloat("environment.inside.salon.temperature", salon_temperature_metadata));
+  bme280_temp->connect_to(new SKOutputFloat("environment.outside.temperature", outside_temperature_metadata));
 
-  bme280_pressure->connect_to(new SKOutputFloat("environment.inside.salon.pressure", salon_barometric_pressure_metadata));
+  bme280_pressure->connect_to(new SKOutputFloat("environment.outside.pressure", outside_barometric_pressure_metadata));
 
-  bme280_humidity->connect_to(new SKOutputFloat("environment.inside.salon.relativeHumidity", salon_relativeHumidity_metadata));
+  bme280_humidity->connect_to(new SKOutputFloat("environment.outside.humidity", outside_humidity_metadata));
 
   // Start networking, SK server connections and other SensESP internals
   sensesp_app->start();
